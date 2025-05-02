@@ -10,8 +10,8 @@ public class WLayer{
     grayEnd = 20.1f,
 
     //Just under blocks
-    yellowBegin = 29.4f,
+    goldBegin = 29.4f,
 
     //Just under pixelation
-    yellowEnd = 209.9f;
+    goldEnd = 209.9f;
 }

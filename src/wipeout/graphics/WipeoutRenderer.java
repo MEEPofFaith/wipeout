@@ -6,18 +6,17 @@ import arc.graphics.gl.*;
 import arc.util.*;
 import mindustry.game.*;
 import mindustry.game.EventType.*;
-import wipeout.graphics.WShaders.*;
 
 import static arc.Core.*;
 
 public class WipeoutRenderer{
     private final FrameBuffer grayBuffer;
-    private final FrameBuffer yellowBuffer;
+    private final FrameBuffer goldBuffer;
     private float winTimer = -1f;
 
     public WipeoutRenderer(){
         grayBuffer = new FrameBuffer();
-        yellowBuffer = new FrameBuffer();
+        goldBuffer = new FrameBuffer();
 
         //Stuff that needs to be run
         Events.run(Trigger.update, this::update);
@@ -49,14 +48,14 @@ public class WipeoutRenderer{
             grayBuffer.blit(WShaders.grayscale);
         });
 
-        Draw.draw(WLayer.yellowBegin, () -> {
-            yellowBuffer.resize(graphics.getWidth(), graphics.getHeight());
-            yellowBuffer.begin();
+        Draw.draw(WLayer.goldBegin, () -> {
+            goldBuffer.resize(graphics.getWidth(), graphics.getHeight());
+            goldBuffer.begin();
         });
 
-        Draw.draw(WLayer.yellowEnd, () -> {
-            yellowBuffer.end();
-            yellowBuffer.blit(WShaders.grayscale);
+        Draw.draw(WLayer.goldEnd, () -> {
+            goldBuffer.end();
+            goldBuffer.blit(WShaders.grayscale);
         });
     }
 }
