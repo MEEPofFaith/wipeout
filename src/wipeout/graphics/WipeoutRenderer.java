@@ -6,6 +6,7 @@ import arc.graphics.gl.*;
 import arc.util.*;
 import mindustry.game.*;
 import mindustry.game.EventType.*;
+import mindustry.gen.*;
 
 import static arc.Core.*;
 
@@ -31,9 +32,11 @@ public class WipeoutRenderer{
             loss = false;
         });
         Events.on(WinEvent.class, e -> { //Win
+            Sounds.corexplode.play();
             winTimer = 5 * 60;
         });
         Events.on(LoseEvent.class, e -> { //Loss. No, not that kind.
+            Sounds.largeCannon.play();
             winTimer = -1f;
             loss = true;
         });
