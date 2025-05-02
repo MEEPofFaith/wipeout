@@ -21,8 +21,8 @@ public class WipeoutRenderer{
 
     public WipeoutRenderer(){
         globalBuffer = new FrameBuffer();
-        grayBuffer = new FrameBuffer();
         goldBuffer = new FrameBuffer();
+        grayBuffer = new FrameBuffer();
 
         //Stuff that needs to be run
         Events.run(Trigger.update, this::update);
