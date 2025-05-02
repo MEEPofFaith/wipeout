@@ -1,23 +1,26 @@
 #the mod name as displayed in-game
-displayName: "Java Mod Template"
+displayName: "Sector Captured!"
 
 #the internal name of your mod
-name: "example-java-mod"
+name: "sector-captured"
 
 #your name
-author: "You"
+author: "MEEP of Faith"
 
 #the fully qualified main class of the mod
-main: "example.ExampleJavaMod"
+main: "wipeout.Wipeout"
 
 #the mod description as seen in the mod dialog
-description: "A Mindustry Java mod template."
+description: "Adds a cool visual effect when a sector is captured."
 
 #the mod version
 version: 1.0
 
 #the minimum game build required to run this mod
-minGameVersion: 145
+minGameVersion: 147
 
 #this is a java mod
 java: true
+
+#purely visual client-side mod
+hidden: true
