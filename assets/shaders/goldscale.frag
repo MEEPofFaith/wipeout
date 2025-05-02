@@ -7,7 +7,8 @@ varying vec2 v_texCoords;
 void main() {
     vec2 t = v_texCoords.xy;
     vec4 color = texture2D(u_texture, t);
-    vec3 goldScale = vec3(1.0, 1.0, 0.0);
+    vec3 greyScale = vec3(0.6, 0.6, 0.6);
 
-    gl_FragColor = vec4(vec3(dot(color.rgb, goldScale)), color.a);
+    //TODO better shader
+    gl_FragColor = vec4(vec3(dot(color.rgb, greyScale)) * vec3(1.0, 0.9, 0.0), color.a);
 }

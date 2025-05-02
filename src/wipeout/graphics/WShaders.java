@@ -7,22 +7,22 @@ import static mindustry.Vars.*;
 
 public class WShaders{
     public static GrayscaleShader grayscale;
-    public static GoldscaleShader golfScale;
+    public static GoldscaleShader goldScale;
 
     public static void init(){
         grayscale = new GrayscaleShader();
-        golfScale = new GoldscaleShader();
+        goldScale = new GoldscaleShader();
     }
 
     public static class GrayscaleShader extends WLoadShader{
         public GrayscaleShader(){
-            super("grayscale");
+            super("screenspace", "grayscale");
         }
     }
 
     public static class GoldscaleShader extends WLoadShader{
         public GoldscaleShader(){
-            super("yellowscale");
+            super("screenspace", "goldscale");
         }
     }
 

@@ -15,6 +15,7 @@ public class Wipeout extends Mod{
 
     @Override
     public void init(){
+        WShaders.init();
         renderer = new WipeoutRenderer();
     }
 }

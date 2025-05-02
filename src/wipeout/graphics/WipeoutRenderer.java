@@ -1,10 +1,11 @@
 package wipeout.graphics;
 
 import arc.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.util.*;
-import mindustry.game.*;
+import mindustry.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 
@@ -32,10 +33,14 @@ public class WipeoutRenderer{
             loss = false;
         });
         Events.on(SectorCaptureEvent.class, e -> { //Win
+            Log.info("Capture");
             Sounds.corexplode.play();
             winTimer = 5 * 60;
         });
-        Events.on(LoseEvent.class, e -> { //Loss. No, not that kind.
+        Events.on(GameOverEvent.class, e -> { //Loss. No, not that kind.
+            if(Vars.player.team() == e.winner) return;
+
+            Log.info("Game Over");
             Sounds.largeCannon.play();
             winTimer = -1f;
             loss = true;
@@ -43,6 +48,8 @@ public class WipeoutRenderer{
     }
 
     private void update(){
+        if(Vars.state.isPaused()) return;
+
         winTimer -= Time.delta;
     }
 
@@ -57,29 +64,29 @@ public class WipeoutRenderer{
     private void drawWin(){
         Draw.draw(WLayer.grayBegin, () -> {
             grayBuffer.resize(graphics.getWidth(), graphics.getHeight());
-            grayBuffer.begin();
+            grayBuffer.begin(Color.clear);
         });
 
-        Draw.draw(WLayer.grayEnd, () -> {
+        Draw.draw(WLayer.goldBegin - 0.1f, () -> {
             grayBuffer.end();
             grayBuffer.blit(WShaders.grayscale);
         });
 
         Draw.draw(WLayer.goldBegin, () -> {
             goldBuffer.resize(graphics.getWidth(), graphics.getHeight());
-            goldBuffer.begin();
+            goldBuffer.begin(Color.clear);
         });
 
         Draw.draw(WLayer.goldEnd, () -> {
             goldBuffer.end();
-            goldBuffer.blit(WShaders.grayscale);
+            goldBuffer.blit(WShaders.goldScale);
         });
     }
 
     private void drawLoss(){
         Draw.draw(WLayer.grayBegin, () -> {
             globalBuffer.resize(graphics.getWidth(), graphics.getHeight());
-            globalBuffer.begin();
+            globalBuffer.begin(Color.clear);
         });
 
         Draw.draw(WLayer.goldEnd, () -> {
