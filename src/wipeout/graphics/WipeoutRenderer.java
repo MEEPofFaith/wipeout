@@ -62,34 +62,34 @@ public class WipeoutRenderer{
     }
 
     private void drawWin(){
-        Draw.draw(WLayer.grayBegin, () -> {
-            grayBuffer.resize(graphics.getWidth(), graphics.getHeight());
-            grayBuffer.begin(Color.clear);
-        });
-
-        Draw.draw(WLayer.goldBegin - 0.1f, () -> {
-            grayBuffer.end();
-            grayBuffer.blit(WShaders.grayscale);
-        });
-
         Draw.draw(WLayer.goldBegin, () -> {
             goldBuffer.resize(graphics.getWidth(), graphics.getHeight());
             goldBuffer.begin(Color.clear);
         });
 
-        Draw.draw(WLayer.goldEnd, () -> {
+        Draw.draw(WLayer.grayBegin - 0.1f, () -> {
             goldBuffer.end();
             goldBuffer.blit(WShaders.goldScale);
+        });
+
+        Draw.draw(WLayer.grayBegin, () -> {
+            grayBuffer.resize(graphics.getWidth(), graphics.getHeight());
+            grayBuffer.begin(Color.clear);
+        });
+
+        Draw.draw(WLayer.grayEnd, () -> {
+            grayBuffer.end();
+            grayBuffer.blit(WShaders.grayscale);
         });
     }
 
     private void drawLoss(){
-        Draw.draw(WLayer.grayBegin, () -> {
+        Draw.draw(WLayer.goldBegin, () -> {
             globalBuffer.resize(graphics.getWidth(), graphics.getHeight());
             globalBuffer.begin(Color.clear);
         });
 
-        Draw.draw(WLayer.goldEnd, () -> {
+        Draw.draw(WLayer.grayEnd, () -> {
             globalBuffer.end();
             globalBuffer.blit(WShaders.grayscale);
         });
