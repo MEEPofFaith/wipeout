@@ -6,7 +6,7 @@ public class WLayer{
     //Just under the background
     goldBegin = -10.1f,
 
-    //Just under blocks
+    //Just under turrets
     grayBegin = 49.9f,
 
     //Just under pixelation
