@@ -31,7 +31,7 @@ public class WipeoutRenderer{
             winTimer = -1f;
             loss = false;
         });
-        Events.on(WinEvent.class, e -> { //Win
+        Events.on(SectorCaptureEvent.class, e -> { //Win
             Sounds.corexplode.play();
             winTimer = 5 * 60;
         });
