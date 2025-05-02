@@ -10,11 +10,15 @@ import mindustry.game.EventType.*;
 import static arc.Core.*;
 
 public class WipeoutRenderer{
+    private final FrameBuffer globalBuffer;
     private final FrameBuffer grayBuffer;
     private final FrameBuffer goldBuffer;
+
     private float winTimer = -1f;
+    private boolean loss = false;
 
     public WipeoutRenderer(){
+        globalBuffer = new FrameBuffer();
         grayBuffer = new FrameBuffer();
         goldBuffer = new FrameBuffer();
 
@@ -22,13 +26,17 @@ public class WipeoutRenderer{
         Events.run(Trigger.update, this::update);
         Events.run(Trigger.draw, this::draw);
 
-        Events.on(EventType.WinEvent.class, e -> {
-            wipeout();
+        Events.on(WorldLoadEvent.class, e -> { //Reset on world load
+            winTimer = -1f;
+            loss = false;
         });
-    }
-
-    private void wipeout(){
-        winTimer = 5 * 60; //5 seconds for now
+        Events.on(WinEvent.class, e -> { //Win
+            winTimer = 5 * 60;
+        });
+        Events.on(LoseEvent.class, e -> { //Loss. No, not that kind.
+            winTimer = -1f;
+            loss = true;
+        });
     }
 
     private void update(){
@@ -36,8 +44,14 @@ public class WipeoutRenderer{
     }
 
     private void draw(){
-        if(winTimer < 0) return;
+        if(loss){
+            drawLoss();
+        }else if(winTimer > 0){
+            drawWin();
+        }
+    }
 
+    private void drawWin(){
         Draw.draw(WLayer.grayBegin, () -> {
             grayBuffer.resize(graphics.getWidth(), graphics.getHeight());
             grayBuffer.begin();
@@ -56,6 +70,18 @@ public class WipeoutRenderer{
         Draw.draw(WLayer.goldEnd, () -> {
             goldBuffer.end();
             goldBuffer.blit(WShaders.grayscale);
+        });
+    }
+
+    private void drawLoss(){
+        Draw.draw(WLayer.grayBegin, () -> {
+            globalBuffer.resize(graphics.getWidth(), graphics.getHeight());
+            globalBuffer.begin();
+        });
+
+        Draw.draw(WLayer.goldEnd, () -> {
+            globalBuffer.end();
+            globalBuffer.blit(WShaders.grayscale);
         });
     }
 }
