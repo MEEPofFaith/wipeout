@@ -15,8 +15,17 @@ public class WShaders{
     }
 
     public static class GrayscaleShader extends WLoadShader{
+        public float wipe = 0f;
+
         public GrayscaleShader(){
             super("screenspace", "grayscale");
+        }
+
+        @Override
+        public void apply(){
+            super.apply();
+
+            setUniformf("u_wipe", wipe);
         }
     }
 

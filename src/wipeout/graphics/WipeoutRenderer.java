@@ -4,6 +4,7 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
+import arc.math.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.game.EventType.*;
@@ -16,7 +17,7 @@ public class WipeoutRenderer{
     private final FrameBuffer grayBuffer;
     private final FrameBuffer goldBuffer;
 
-    private float winTimer = -1f;
+    private float animTimer = -1f;
     private boolean loss = false;
 
     public WipeoutRenderer(){
@@ -29,20 +30,20 @@ public class WipeoutRenderer{
         Events.run(Trigger.draw, this::draw);
 
         Events.on(WorldLoadEvent.class, e -> { //Reset on world load
-            winTimer = -1f;
+            animTimer = -1f;
             loss = false;
         });
         Events.on(SectorCaptureEvent.class, e -> { //Win
             Log.info("Capture");
             Sounds.corexplode.play();
-            winTimer = 5 * 60;
+            animTimer = 5 * 60;
         });
         Events.on(GameOverEvent.class, e -> { //Loss. No, not that kind.
             if(Vars.player.team() == e.winner) return;
 
             Log.info("Game Over");
             Sounds.largeCannon.play();
-            winTimer = -1f;
+            animTimer = 2 * 60;
             loss = true;
         });
     }
@@ -50,13 +51,13 @@ public class WipeoutRenderer{
     private void update(){
         if(Vars.state.isPaused()) return;
 
-        winTimer -= Time.delta;
+        animTimer -= Time.delta;
     }
 
     private void draw(){
         if(loss){
             drawLoss();
-        }else if(winTimer > 0){
+        }else if(animTimer > 0){
             drawWin();
         }
     }
@@ -79,6 +80,7 @@ public class WipeoutRenderer{
 
         Draw.draw(WLayer.grayEnd, () -> {
             grayBuffer.end();
+            WShaders.grayscale.wipe = 0f;
             grayBuffer.blit(WShaders.grayscale);
         });
     }
@@ -91,6 +93,7 @@ public class WipeoutRenderer{
 
         Draw.draw(WLayer.grayEnd, () -> {
             globalBuffer.end();
+            WShaders.grayscale.wipe = (animTimer < 0 ? Mathf.clamp(-animTimer / 30f) : 0f);
             globalBuffer.blit(WShaders.grayscale);
         });
     }
