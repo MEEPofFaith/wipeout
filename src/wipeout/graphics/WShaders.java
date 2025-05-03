@@ -6,12 +6,20 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class WShaders{
+    public static ContrastShader contrast;
     public static GrayscaleShader grayscale;
     public static GoldscaleShader goldScale;
 
     public static void init(){
+        contrast = new ContrastShader();
         grayscale = new GrayscaleShader();
         goldScale = new GoldscaleShader();
+    }
+
+    public static class ContrastShader extends WLoadShader{
+        public ContrastShader(){
+            super("screenspace", "contrastscale");
+        }
     }
 
     public static class GrayscaleShader extends WLoadShader{

@@ -22,7 +22,7 @@ void main() {
         }
         t -= vec2(0.5, 0.5);
         t.x /= 1 + u_wipe * 10;
-        t.y *= 1 + u_wipe * 500;
+        t.y *= 1 + u_wipe * 200;
         t += vec2(0.5);
 
         if(inBounds(t)){

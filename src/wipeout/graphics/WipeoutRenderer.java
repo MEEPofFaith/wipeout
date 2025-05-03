@@ -63,6 +63,19 @@ public class WipeoutRenderer{
     }
 
     private void drawWin(){
+        if(animTimer > 4.9 * 60 || animTimer < 0.1 * 60){
+            Draw.draw(WLayer.goldBegin, () -> {
+                globalBuffer.resize(graphics.getWidth(), graphics.getHeight());
+                globalBuffer.begin(Color.clear);
+            });
+
+            Draw.draw(WLayer.grayEnd, () -> {
+                globalBuffer.end();
+                globalBuffer.blit(WShaders.contrast);
+            });
+            return;
+        }
+
         Draw.draw(WLayer.goldBegin, () -> {
             goldBuffer.resize(graphics.getWidth(), graphics.getHeight());
             goldBuffer.begin(Color.clear);
@@ -93,8 +106,12 @@ public class WipeoutRenderer{
 
         Draw.draw(WLayer.grayEnd, () -> {
             globalBuffer.end();
-            WShaders.grayscale.wipe = (animTimer < 0 ? Mathf.clamp(-animTimer / 30f) : 0f);
-            globalBuffer.blit(WShaders.grayscale);
+            if(animTimer > 1.9 * 60){
+                globalBuffer.blit(WShaders.contrast);
+            }else{
+                WShaders.grayscale.wipe = (animTimer < 0 ? Mathf.clamp(-animTimer / 30f) : 0f);
+                globalBuffer.blit(WShaders.grayscale);
+            }
         });
     }
 }
