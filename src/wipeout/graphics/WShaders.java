@@ -1,24 +1,36 @@
 package wipeout.graphics;
 
+import arc.*;
 import arc.graphics.gl.*;
+import arc.math.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class WShaders{
-    public static ContrastShader contrast;
+    public static StaticShader contrast;
     public static GrayscaleShader grayscale;
     public static GoldscaleShader goldScale;
 
     public static void init(){
-        contrast = new ContrastShader();
+        contrast = new StaticShader();
         grayscale = new GrayscaleShader();
         goldScale = new GoldscaleShader();
     }
 
-    public static class ContrastShader extends WLoadShader{
-        public ContrastShader(){
-            super("screenspace", "contrastscale");
+    public static class StaticShader extends WLoadShader{
+        public float seed;
+        public float intensity = 1f;
+
+        public StaticShader(){
+            super("screenspace", "static");
+        }
+
+        @Override
+        public void apply(){
+            setUniformi("u_sections", Mathf.ceil(graphics.getHeight() / 100f));
+            setUniformf("u_seed", seed);
+            setUniformf("u_intensity", intensity);
         }
     }
 
@@ -31,8 +43,6 @@ public class WShaders{
 
         @Override
         public void apply(){
-            super.apply();
-
             setUniformf("u_wipe", wipe);
         }
     }

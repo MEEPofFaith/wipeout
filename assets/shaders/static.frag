@@ -4,6 +4,9 @@
 #define EXP_POW 3.0
 
 uniform sampler2D u_texture;
+uniform int u_sections;
+uniform float u_seed;
+uniform float u_intensity;
 
 varying vec2 v_texCoords;
 
@@ -22,8 +25,15 @@ vec3 contrast(vec3 col){
     return col;
 }
 
+float rand(float sec){
+    return sin(u_seed + sec) * 0.2f;
+}
+
 void main() {
     vec2 t = v_texCoords.xy;
+    t.x += rand(floor(t.y * u_sections)) * u_intensity;
+    t.x = mod(t.x, 1.0);
+
     vec4 color = texture2D(u_texture, t);
     vec3 greyScale = vec3(0.35, 0.35, 0.35);
 

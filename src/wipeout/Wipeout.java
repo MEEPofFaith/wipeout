@@ -1,10 +1,7 @@
 package wipeout;
 
-import arc.*;
-import arc.util.*;
-import mindustry.game.EventType.*;
 import mindustry.mod.*;
-import mindustry.ui.dialogs.*;
+import wipeout.content.*;
 import wipeout.graphics.*;
 
 public class Wipeout extends Mod{
@@ -15,6 +12,7 @@ public class Wipeout extends Mod{
 
     @Override
     public void init(){
+        WSounds.load();
         WShaders.init();
         renderer = new WipeoutRenderer();
     }

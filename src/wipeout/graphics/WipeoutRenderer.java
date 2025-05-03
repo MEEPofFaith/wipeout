@@ -9,6 +9,7 @@ import arc.util.*;
 import mindustry.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
+import wipeout.content.*;
 
 import static arc.Core.*;
 
@@ -19,6 +20,7 @@ public class WipeoutRenderer{
 
     private float animTimer = -1f;
     private boolean loss = false;
+    private boolean noisePlayed = true;
 
     public WipeoutRenderer(){
         globalBuffer = new FrameBuffer();
@@ -35,16 +37,21 @@ public class WipeoutRenderer{
         });
         Events.on(SectorCaptureEvent.class, e -> { //Win
             Log.info("Capture");
-            Sounds.corexplode.play();
+            WSounds.noise.play();
+            //Sounds.corexplode.play();
             animTimer = 5 * 60;
+            noisePlayed = false;
+            WShaders.contrast.seed = Time.time;
         });
         Events.on(GameOverEvent.class, e -> { //Loss. No, not that kind.
             if(Vars.player.team() == e.winner) return;
 
             Log.info("Game Over");
-            Sounds.largeCannon.play();
+            WSounds.noise.play();
+            //Sounds.largeCannon.play();
             animTimer = 2 * 60;
             loss = true;
+            WShaders.contrast.seed = Time.time;
         });
     }
 
@@ -52,6 +59,11 @@ public class WipeoutRenderer{
         if(Vars.state.isPaused()) return;
 
         animTimer -= Time.delta;
+
+        if(!loss && !noisePlayed && animTimer < 0.3 * 60){
+            WSounds.noise.play();
+            noisePlayed = true;
+        }
     }
 
     private void draw(){
@@ -63,7 +75,7 @@ public class WipeoutRenderer{
     }
 
     private void drawWin(){
-        if(animTimer > 4.8 * 60 || animTimer < 0.2 * 60){
+        if(animTimer > 4.7 * 60 || animTimer < 0.3 * 60){
             Draw.draw(WLayer.goldBegin, () -> {
                 globalBuffer.resize(graphics.getWidth(), graphics.getHeight());
                 globalBuffer.begin(Color.clear);
@@ -71,6 +83,9 @@ public class WipeoutRenderer{
 
             Draw.draw(WLayer.grayEnd, () -> {
                 globalBuffer.end();
+                WShaders.contrast.intensity = Interp.pow2In.apply(animTimer > 4.7f * 60f
+                    ? Mathf.curve(animTimer, 4.7f * 60f, 5f * 60f)
+                    : Mathf.curve(animTimer, 0f, 0.3f * 60f));
                 globalBuffer.blit(WShaders.contrast);
             });
             return;
@@ -116,7 +131,8 @@ public class WipeoutRenderer{
 
         Draw.draw(WLayer.grayEnd, () -> {
             globalBuffer.end();
-            if(animTimer > 1.9 * 60){
+            if(animTimer > 1.7 * 60){
+                WShaders.contrast.intensity = Interp.pow2In.apply(Mathf.curve(animTimer, 1.7f * 60f, 2f * 60f));
                 globalBuffer.blit(WShaders.contrast);
             }else{
                 WShaders.grayscale.wipe = (animTimer < 0 ? Mathf.clamp(-animTimer / 30f) : 0f);
