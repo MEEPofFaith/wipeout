@@ -63,7 +63,7 @@ public class WipeoutRenderer{
     }
 
     private void drawWin(){
-        if(animTimer > 4.9 * 60 || animTimer < 0.1 * 60){
+        if(animTimer > 4.8 * 60 || animTimer < 0.2 * 60){
             Draw.draw(WLayer.goldBegin, () -> {
                 globalBuffer.resize(graphics.getWidth(), graphics.getHeight());
                 globalBuffer.begin(Color.clear);
