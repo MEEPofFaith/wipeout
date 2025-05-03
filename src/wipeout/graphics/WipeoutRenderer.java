@@ -96,6 +96,16 @@ public class WipeoutRenderer{
             WShaders.grayscale.wipe = 0f;
             grayBuffer.blit(WShaders.grayscale);
         });
+
+        Draw.draw(WLayer.grayEnd + 0.1f, () -> {
+            goldBuffer.resize(graphics.getWidth(), graphics.getHeight());
+            goldBuffer.begin(Color.clear);
+        });
+
+        Draw.draw(WLayer.goldEnd, () -> {
+            goldBuffer.end();
+            goldBuffer.blit(WShaders.goldScale);
+        });
     }
 
     private void drawLoss(){

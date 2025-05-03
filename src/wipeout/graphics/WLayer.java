@@ -1,14 +1,15 @@
 package wipeout.graphics;
 
+import mindustry.graphics.*;
+
 public class WLayer{
     public static final float
 
-    //Just under the background
-    goldBegin = -10.1f,
+    goldBegin = Layer.background - 0.1f,
 
-    //Just under turrets
-    grayBegin = 49.9f,
+    grayBegin = Layer.turret - 0.1f,
 
-    //Just under pixelation
-    grayEnd = 209.9f;
+    grayEnd = Layer.flyingUnit + 0.1f,
+
+    goldEnd = Layer.endPixeled - 0.1f;
 }
