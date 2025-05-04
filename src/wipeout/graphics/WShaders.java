@@ -9,16 +9,19 @@ import static mindustry.Vars.*;
 
 public class WShaders{
     public static StaticShader contrast;
+    public static ShutdownShader shutdown;
     public static GrayscaleShader grayscale;
     public static GoldscaleShader goldScale;
 
     public static void init(){
         contrast = new StaticShader();
+        shutdown = new ShutdownShader();
         grayscale = new GrayscaleShader();
         goldScale = new GoldscaleShader();
     }
 
     public static class StaticShader extends WLoadShader{
+        public int sections = 1;
         public float seed;
         public float intensity = 1f;
 
@@ -28,22 +31,28 @@ public class WShaders{
 
         @Override
         public void apply(){
-            setUniformi("u_sections", Mathf.ceil(graphics.getHeight() / 100f));
+            setUniformi("u_sections", sections);
             setUniformf("u_seed", seed);
             setUniformf("u_intensity", intensity);
         }
     }
 
-    public static class GrayscaleShader extends WLoadShader{
+    public static class ShutdownShader extends WLoadShader{
         public float wipe = 0f;
 
-        public GrayscaleShader(){
-            super("screenspace", "grayscale");
+        public ShutdownShader(){
+            super("screenspace", "shutoff");
         }
 
         @Override
         public void apply(){
             setUniformf("u_wipe", wipe);
+        }
+    }
+
+    public static class GrayscaleShader extends WLoadShader{
+        public GrayscaleShader(){
+            super("screenspace", "grayscale");
         }
     }
 

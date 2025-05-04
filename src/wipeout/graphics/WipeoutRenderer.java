@@ -5,8 +5,10 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.util.*;
 import mindustry.*;
+import mindustry.audio.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import wipeout.content.*;
@@ -14,18 +16,21 @@ import wipeout.content.*;
 import static arc.Core.*;
 
 public class WipeoutRenderer{
-    private final FrameBuffer globalBuffer;
-    private final FrameBuffer grayBuffer;
-    private final FrameBuffer goldBuffer;
+    private final FrameBuffer buffer1;
+    private final FrameBuffer buffer2;
+    private final FrameBuffer buffer3;
 
     private float animTimer = -1f;
     private boolean loss = false;
     private boolean noisePlayed = true;
+    private float lastSeed = 0f;
+    private SoundLoop staticLoop;
 
     public WipeoutRenderer(){
-        globalBuffer = new FrameBuffer();
-        goldBuffer = new FrameBuffer();
-        grayBuffer = new FrameBuffer();
+        buffer1 = new FrameBuffer();
+        buffer2 = new FrameBuffer();
+        buffer3 = new FrameBuffer();
+        staticLoop = new SoundLoop(WSounds.noise, 1f);
 
         //Stuff that needs to be run
         Events.run(Trigger.update, this::update);
@@ -34,11 +39,12 @@ public class WipeoutRenderer{
         Events.on(WorldLoadEvent.class, e -> { //Reset on world load
             animTimer = -1f;
             loss = false;
+            staticLoop.stop();
         });
         Events.on(SectorCaptureEvent.class, e -> { //Win
             Log.info("Capture");
             WSounds.noise.play();
-            //Sounds.corexplode.play();
+            Sounds.corexplode.play();
             animTimer = 5 * 60;
             noisePlayed = false;
             WShaders.contrast.seed = Time.time;
@@ -47,8 +53,7 @@ public class WipeoutRenderer{
             if(Vars.player.team() == e.winner) return;
 
             Log.info("Game Over");
-            WSounds.noise.play();
-            //Sounds.largeCannon.play();
+            Sounds.largeCannon.play();
             animTimer = 2 * 60;
             loss = true;
             WShaders.contrast.seed = Time.time;
@@ -60,9 +65,15 @@ public class WipeoutRenderer{
 
         animTimer -= Time.delta;
 
-        if(!loss && !noisePlayed && animTimer < 0.3 * 60){
-            WSounds.noise.play();
-            noisePlayed = true;
+        if(!loss){
+            if(!noisePlayed && animTimer < 0.3 * 60){
+                WSounds.noise.play();
+                noisePlayed = true;
+            }
+        }else{
+            if(Time.time - WShaders.contrast.seed > (1f - glitchFin()) * 20f) WShaders.contrast.seed = Time.time;
+            Vec2 camPos = camera.position;
+            staticLoop.update(camPos.x, camPos.y, animTimer > 0, glitchFin() * 2f);
         }
     }
 
@@ -77,67 +88,75 @@ public class WipeoutRenderer{
     private void drawWin(){
         if(animTimer > 4.7 * 60 || animTimer < 0.3 * 60){
             Draw.draw(WLayer.goldBegin, () -> {
-                globalBuffer.resize(graphics.getWidth(), graphics.getHeight());
-                globalBuffer.begin(Color.clear);
+                buffer1.resize(graphics.getWidth(), graphics.getHeight());
+                buffer1.begin(Color.clear);
             });
 
             Draw.draw(WLayer.grayEnd, () -> {
-                globalBuffer.end();
+                buffer1.end();
                 WShaders.contrast.intensity = Interp.pow2In.apply(animTimer > 4.7f * 60f
                     ? Mathf.curve(animTimer, 4.7f * 60f, 5f * 60f)
                     : Mathf.curve(animTimer, 0f, 0.3f * 60f));
-                globalBuffer.blit(WShaders.contrast);
+                buffer1.blit(WShaders.contrast);
             });
             return;
         }
 
         Draw.draw(WLayer.goldBegin, () -> {
-            goldBuffer.resize(graphics.getWidth(), graphics.getHeight());
-            goldBuffer.begin(Color.clear);
+            buffer2.resize(graphics.getWidth(), graphics.getHeight());
+            buffer2.begin(Color.clear);
         });
 
         Draw.draw(WLayer.grayBegin - 0.1f, () -> {
-            goldBuffer.end();
-            goldBuffer.blit(WShaders.goldScale);
+            buffer2.end();
+            buffer2.blit(WShaders.goldScale);
         });
 
         Draw.draw(WLayer.grayBegin, () -> {
-            grayBuffer.resize(graphics.getWidth(), graphics.getHeight());
-            grayBuffer.begin(Color.clear);
+            buffer2.resize(graphics.getWidth(), graphics.getHeight());
+            buffer2.begin(Color.clear);
         });
 
         Draw.draw(WLayer.grayEnd, () -> {
-            grayBuffer.end();
-            WShaders.grayscale.wipe = 0f;
-            grayBuffer.blit(WShaders.grayscale);
+            buffer2.end();
+            buffer2.blit(WShaders.grayscale);
         });
 
         Draw.draw(WLayer.grayEnd + 0.1f, () -> {
-            goldBuffer.resize(graphics.getWidth(), graphics.getHeight());
-            goldBuffer.begin(Color.clear);
+            buffer2.resize(graphics.getWidth(), graphics.getHeight());
+            buffer2.begin(Color.clear);
         });
 
         Draw.draw(WLayer.goldEnd, () -> {
-            goldBuffer.end();
-            goldBuffer.blit(WShaders.goldScale);
+            buffer2.end();
+            buffer2.blit(WShaders.goldScale);
         });
     }
 
     private void drawLoss(){
         Draw.draw(WLayer.goldBegin, () -> {
-            globalBuffer.resize(graphics.getWidth(), graphics.getHeight());
-            globalBuffer.begin(Color.clear);
+            buffer1.resize(graphics.getWidth(), graphics.getHeight());
+            buffer1.begin(Color.clear);
         });
 
         Draw.draw(WLayer.grayEnd, () -> {
-            globalBuffer.end();
-            if(animTimer > 1.7 * 60){
-                WShaders.contrast.intensity = Interp.pow2In.apply(Mathf.curve(animTimer, 1.7f * 60f, 2f * 60f));
-                globalBuffer.blit(WShaders.contrast);
-            }else{
-                WShaders.grayscale.wipe = (animTimer < 0 ? Mathf.clamp(-animTimer / 30f) : 0f);
-                globalBuffer.blit(WShaders.grayscale);
-            }
+            buffer1.end();
+
+            buffer2.resize(graphics.getWidth(), graphics.getHeight());
+            buffer2.begin();
+
+            WShaders.contrast.sections = Mathf.ceil(graphics.getHeight() / 100f * (1f + glitchFin() * 4f));
+            WShaders.contrast.intensity = glitchFin() * 20f;
+            buffer1.blit(WShaders.contrast);
+
+            buffer2.end();
+
+            WShaders.shutdown.wipe = (animTimer < 0 ? Mathf.clamp(-animTimer / 30f) : 0f);
+            buffer2.blit(WShaders.shutdown);
         });
+    }
+
+    private float glitchFin(){
+        return Interp.pow3In.apply(1f - (animTimer / 120f));
     }
 }

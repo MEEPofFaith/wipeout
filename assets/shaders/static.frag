@@ -31,7 +31,7 @@ float rand(float sec){
 
 void main() {
     vec2 t = v_texCoords.xy;
-    t.x += rand(floor(t.y * u_sections)) * u_intensity;
+    t.x += rand(floor(mod(t.y + u_seed / 251.0, 1.0) * u_sections)) * u_intensity; //random arbitrary value lesgoooooo
     t.x = mod(t.x, 1.0);
 
     vec4 color = texture2D(u_texture, t);
