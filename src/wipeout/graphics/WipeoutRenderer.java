@@ -18,33 +18,27 @@ import static arc.Core.*;
 public class WipeoutRenderer{
     private final FrameBuffer buffer1;
     private final FrameBuffer buffer2;
-    private final FrameBuffer buffer3;
+    private final SoundLoop staticLoop;
 
     private float animTimer = -1f;
+    private boolean play = false;
     private boolean loss = false;
     private boolean noisePlayed = true;
-    private float lastSeed = 0f;
-    private SoundLoop staticLoop;
 
     public WipeoutRenderer(){
         buffer1 = new FrameBuffer();
         buffer2 = new FrameBuffer();
-        buffer3 = new FrameBuffer();
         staticLoop = new SoundLoop(WSounds.noise, 1f);
 
         //Stuff that needs to be run
         Events.run(Trigger.update, this::update);
         Events.run(Trigger.draw, this::draw);
 
-        Events.on(WorldLoadEvent.class, e -> { //Reset on world load
-            animTimer = -1f;
-            loss = false;
-            staticLoop.stop();
-        });
+        Events.on(WorldLoadEvent.class, e -> reset());
         Events.on(SectorCaptureEvent.class, e -> { //Win
-            Log.info("Capture");
             WSounds.noise.play();
             Sounds.corexplode.play();
+            play = true;
             animTimer = 5 * 60;
             noisePlayed = false;
             WShaders.contrast.seed = Time.time;
@@ -52,16 +46,23 @@ public class WipeoutRenderer{
         Events.on(GameOverEvent.class, e -> { //Loss. No, not that kind.
             if(Vars.player.team() == e.winner) return;
 
-            Log.info("Game Over");
             Sounds.largeCannon.play();
+            play = true;
             animTimer = 2 * 60;
             loss = true;
             WShaders.contrast.seed = Time.time;
         });
     }
 
+    private void reset(){
+        play = false;
+        animTimer = -1f;
+        loss = false;
+        staticLoop.stop();
+    }
+
     private void update(){
-        if(Vars.state.isPaused()) return;
+        if(Vars.state.isPaused() || !play) return;
 
         animTimer -= Time.delta;
 
