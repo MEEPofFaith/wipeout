@@ -24,6 +24,7 @@ public class WipeoutRenderer{
     private boolean play = false;
     private boolean loss = false;
     private boolean noisePlayed = true;
+    private boolean pain = false;
 
     public WipeoutRenderer(){
         buffer1 = new FrameBuffer();
@@ -46,6 +47,9 @@ public class WipeoutRenderer{
         Events.on(GameOverEvent.class, e -> { //Loss. No, not that kind.
             if(Vars.player.team() == e.winner) return;
 
+            pain = Mathf.randomBoolean(0.01f); //1% chance
+
+            if(pain) WSounds.pain.play();
             Sounds.largeCannon.play();
             play = true;
             animTimer = 2 * 60;
@@ -59,6 +63,7 @@ public class WipeoutRenderer{
         animTimer = -1f;
         loss = false;
         staticLoop.stop();
+        pain = false;
     }
 
     private void update(){
@@ -74,7 +79,7 @@ public class WipeoutRenderer{
         }else{
             if(Time.time - WShaders.contrast.seed > (1f - glitchFin()) * 20f) WShaders.contrast.seed = Time.time;
             Vec2 camPos = camera.position;
-            staticLoop.update(camPos.x, camPos.y, animTimer > 0, glitchFin() * 2f);
+            staticLoop.update(camPos.x, camPos.y, !pain && animTimer > 0, glitchFin() * 2f);
         }
     }
 

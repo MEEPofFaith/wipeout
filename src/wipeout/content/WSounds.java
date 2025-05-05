@@ -5,8 +5,10 @@ import mindustry.*;
 
 public class WSounds{
     public static Sound noise = new Sound();
+    public static Sound pain = new Sound();
 
     public static void load(){
         noise = Vars.tree.loadSound("noise");
+        pain = Vars.tree.loadSound("pain");
     }
 }
