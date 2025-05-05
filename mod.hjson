@@ -1,8 +1,8 @@
 #the mod name as displayed in-game
-displayName: "Sector Captured!"
+displayName: "Wipeout"
 
 #the internal name of your mod
-name: "sector-captured"
+name: "wipeout"
 
 #your name
 author: "MEEP of Faith"
@@ -11,7 +11,7 @@ author: "MEEP of Faith"
 main: "wipeout.Wipeout"
 
 #the mod description as seen in the mod dialog
-description: "Adds a cool visual effect when a sector is captured."
+description: "Makes capturing a sector or losing the game more dramatic with special vfx."
 
 #the mod version
 version: 1.0
