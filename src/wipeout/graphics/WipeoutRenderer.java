@@ -94,6 +94,7 @@ public class WipeoutRenderer{
 
             Draw.draw(WLayer.grayEnd, () -> {
                 buffer1.end();
+                WShaders.contrast.sections = Mathf.ceil(graphics.getHeight() / 100f);
                 WShaders.contrast.intensity = Interp.pow2In.apply(animTimer > 4.7f * 60f
                     ? Mathf.curve(animTimer, 4.7f * 60f, 5f * 60f)
                     : Mathf.curve(animTimer, 0f, 0.3f * 60f));
