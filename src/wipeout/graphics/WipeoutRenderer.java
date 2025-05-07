@@ -23,7 +23,6 @@ public class WipeoutRenderer{
     private float animTimer = -1f;
     private boolean play = false;
     private boolean loss = false;
-    private boolean noisePlayed = true;
     private boolean pain = false;
 
     public WipeoutRenderer(){
@@ -37,11 +36,9 @@ public class WipeoutRenderer{
 
         Events.on(WorldLoadEvent.class, e -> reset());
         Events.on(SectorCaptureEvent.class, e -> { //Win
-            WSounds.noise.play();
             Sounds.corexplode.play();
             play = true;
             animTimer = 5 * 60;
-            noisePlayed = false;
             WShaders.contrast.seed = Time.time;
         });
         Events.on(GameOverEvent.class, e -> { //Loss. No, not that kind.
@@ -71,14 +68,11 @@ public class WipeoutRenderer{
 
         animTimer -= Time.delta;
 
+        Vec2 camPos = camera.position;
         if(!loss){
-            if(!noisePlayed && animTimer < 0.3 * 60){
-                WSounds.noise.play();
-                noisePlayed = true;
-            }
+            staticLoop.update(camPos.x, camPos.y, winStatic(), 1f);
         }else{
             if(Time.time - WShaders.contrast.seed > (1f - glitchFin()) * 20f) WShaders.contrast.seed = Time.time;
-            Vec2 camPos = camera.position;
             staticLoop.update(camPos.x, camPos.y, !pain && animTimer > 0, glitchFin() * 2f);
         }
     }
@@ -92,7 +86,7 @@ public class WipeoutRenderer{
     }
 
     private void drawWin(){
-        if(animTimer > 4.7 * 60 || animTimer < 0.3 * 60){
+        if(winStatic()){
             Draw.draw(WLayer.goldBegin, () -> {
                 buffer1.resize(graphics.getWidth(), graphics.getHeight());
                 buffer1.begin(Color.clear);
@@ -164,5 +158,9 @@ public class WipeoutRenderer{
 
     private float glitchFin(){
         return Interp.pow3In.apply(1f - (animTimer / 120f));
+    }
+
+    private boolean winStatic(){
+        return animTimer > 4.7 * 60 || animTimer < 0.3 * 60;
     }
 }
