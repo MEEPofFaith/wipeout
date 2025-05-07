@@ -64,13 +64,16 @@ public class WipeoutRenderer{
     }
 
     private void update(){
-        if(Vars.state.isPaused() || !play) return;
+        if(Vars.state.isPaused() || !play){
+            staticLoop.stop();
+            return;
+        }
 
         animTimer -= Time.delta;
 
         Vec2 camPos = camera.position;
         if(!loss){
-            staticLoop.update(camPos.x, camPos.y, winStatic(), 1f);
+            staticLoop.update(camPos.x, camPos.y, winStatic() && animTimer > 0, 1f);
         }else{
             if(Time.time - WShaders.contrast.seed > (1f - glitchFin()) * 20f) WShaders.contrast.seed = Time.time;
             staticLoop.update(camPos.x, camPos.y, !pain && animTimer > 0, glitchFin() * 2f);
@@ -97,7 +100,7 @@ public class WipeoutRenderer{
                 WShaders.contrast.sections = Mathf.ceil(graphics.getHeight() / 100f);
                 WShaders.contrast.intensity = Interp.pow2In.apply(animTimer > 4.7f * 60f
                     ? Mathf.curve(animTimer, 4.7f * 60f, 5f * 60f)
-                    : Mathf.curve(animTimer, 0f, 0.3f * 60f));
+                    : Mathf.curve(animTimer, 0f, 0.3f * 60f)) / 2f;
                 buffer1.blit(WShaders.contrast);
             });
             return;
