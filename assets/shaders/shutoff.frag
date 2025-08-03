@@ -11,7 +11,7 @@ bool inBounds(vec2 v){
 
 void main() {
     vec2 t = v_texCoords.xy;
-    vec4 color = vec4(0.0);
+    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
 
     if(u_wipe <= 0.01){
         color = texture2D(u_texture, t);
