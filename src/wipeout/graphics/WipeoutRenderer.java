@@ -97,7 +97,7 @@ public class WipeoutRenderer{
 
             Draw.draw(WLayer.grayEnd, () -> {
                 buffer1.end();
-                WShaders.contrast.sections = Mathf.ceil(graphics.getHeight() / 100f);
+                WShaders.contrast.sections = Mathf.ceil(graphics.getHeight() / 25f);
                 WShaders.contrast.intensity = Interp.pow2In.apply(animTimer > 4.7f * 60f
                     ? Mathf.curve(animTimer, 4.7f * 60f, 5f * 60f)
                     : Mathf.curve(animTimer, 0f, 0.3f * 60f)) / 2f;
@@ -143,7 +143,7 @@ public class WipeoutRenderer{
             buffer1.begin(Color.clear);
         });
 
-        Draw.draw(WLayer.grayEnd, () -> {
+        Draw.draw(WLayer.goldEnd, () -> {
             buffer1.end();
 
             buffer2.resize(graphics.getWidth(), graphics.getHeight());
