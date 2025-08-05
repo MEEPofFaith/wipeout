@@ -17,7 +17,7 @@ float e(float a, float v, float p){
 
 void main() {
     vec2 t = v_texCoords.xy;
-    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+    vec4 color = vec4(0.0);
 
     if(u_wipe <= 0.01){
         color = texture2D(u_texture, t);
@@ -26,12 +26,12 @@ void main() {
             gl_FragColor = color;
             return;
         }
-        t -= vec2(0.5, 0.5);
+        t -= vec2(0.5);
 
         t.x *= e(1 - u_wipe, 0.5, 6.0);
         t.y /= 1 - e(u_wipe, 15.0, 3.0);
 
-        t += vec2(0.5, 0.5);
+        t += vec2(0.5);
 
         if(inBounds(t)){
             color = texture2D(u_texture, t);

@@ -1,7 +1,7 @@
 #define HIGHP
 
-#define FADESTART 0.2
-#define FADEEND 0.5
+#define FADESTART 0.1
+#define FADEEND 0.4
 
 uniform sampler2D u_texture;
 

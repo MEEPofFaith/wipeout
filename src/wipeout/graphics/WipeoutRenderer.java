@@ -136,7 +136,7 @@ public class WipeoutRenderer{
     private void drawLoss(){
         Draw.draw(WLayer.goldBegin, () -> {
             buffer1.resize(graphics.getWidth(), graphics.getHeight());
-            buffer1.begin(Color.clear);
+            buffer1.begin(Color.black);
         });
 
         Draw.draw(WLayer.goldEnd, () -> {
