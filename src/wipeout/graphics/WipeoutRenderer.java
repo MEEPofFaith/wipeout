@@ -111,47 +111,21 @@ public class WipeoutRenderer{
             buffer1.begin(Color.clear);
         });
 
-        Draw.draw(WLayer.grayLayers[0], () -> {
-            buffer1.end();
-            buffer1.blit(WShaders.goldScale);
+        for(int i = 0; i < WLayer.grayLayers.length; i += 2){
+            Draw.draw(WLayer.grayLayers[i], () -> {
+                buffer1.end();
+                buffer1.blit(WShaders.goldScale);
 
-            buffer1.begin(Color.clear);
-        });
+                buffer1.begin(Color.clear);
+            });
 
-        Draw.draw(WLayer.grayLayers[1], () -> {
-            buffer1.end();
-            buffer1.blit(WShaders.grayscale);
+            Draw.draw(WLayer.grayLayers[i + 1], () -> {
+                buffer1.end();
+                buffer1.blit(WShaders.grayscale);
 
-            buffer1.begin(Color.clear);
-        });
-
-        Draw.draw(WLayer.grayLayers[2], () -> {
-            buffer1.end();
-            buffer1.blit(WShaders.goldScale);
-
-            buffer1.begin(Color.clear);
-        });
-
-        Draw.draw(WLayer.grayLayers[3], () -> {
-            buffer1.end();
-            buffer1.blit(WShaders.grayscale);
-
-            buffer1.begin(Color.clear);
-        });
-
-        Draw.draw(WLayer.grayLayers[4], () -> {
-            buffer1.end();
-            buffer1.blit(WShaders.goldScale);
-
-            buffer1.begin(Color.clear);
-        });
-
-        Draw.draw(WLayer.grayLayers[5], () -> {
-            buffer1.end();
-            buffer1.blit(WShaders.grayscale);
-
-            buffer1.begin(Color.clear);
-        });
+                buffer1.begin(Color.clear);
+            });
+        }
 
         Draw.draw(WLayer.goldEnd, () -> {
             buffer1.end();

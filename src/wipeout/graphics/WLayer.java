@@ -10,7 +10,8 @@ public class WLayer{
         goldEnd = Layer.endPixeled - 0.1f;
 
     public static final float[] grayLayers = {
-        Layer.turret - 0.5f, Layer.power - 1.1f, //Turrets and ground units
+        //Layer.blockUnder - 0.1f, Layer.blockProp - 0.1f, //Blocks
+        Layer.turret - 0.3f, Layer.power - 1.1f, //Turrets and ground units
         Layer.legUnit - 2f, Layer.darkness - 1.1f, //Leg units
         Layer.flyingUnitLow - 0.1f, Layer.flyingUnit + 0.2f //Bullets and flying units
     };
