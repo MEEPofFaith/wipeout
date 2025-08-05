@@ -95,7 +95,7 @@ public class WipeoutRenderer{
                 buffer1.begin(Color.clear);
             });
 
-            Draw.draw(WLayer.grayEnd, () -> {
+            Draw.draw(WLayer.goldEnd, () -> {
                 buffer1.end();
                 WShaders.contrast.sections = Mathf.ceil(graphics.getHeight() / 25f);
                 WShaders.contrast.intensity = Interp.pow2In.apply(animTimer > 4.7f * 60f
@@ -107,33 +107,55 @@ public class WipeoutRenderer{
         }
 
         Draw.draw(WLayer.goldBegin, () -> {
-            buffer2.resize(graphics.getWidth(), graphics.getHeight());
-            buffer2.begin(Color.clear);
+            buffer1.resize(graphics.getWidth(), graphics.getHeight());
+            buffer1.begin(Color.clear);
         });
 
-        Draw.draw(WLayer.grayBegin - 0.1f, () -> {
-            buffer2.end();
-            buffer2.blit(WShaders.goldScale);
+        Draw.draw(WLayer.grayLayers[0], () -> {
+            buffer1.end();
+            buffer1.blit(WShaders.goldScale);
+
+            buffer1.begin(Color.clear);
         });
 
-        Draw.draw(WLayer.grayBegin, () -> {
-            buffer2.resize(graphics.getWidth(), graphics.getHeight());
-            buffer2.begin(Color.clear);
+        Draw.draw(WLayer.grayLayers[1], () -> {
+            buffer1.end();
+            buffer1.blit(WShaders.grayscale);
+
+            buffer1.begin(Color.clear);
         });
 
-        Draw.draw(WLayer.grayEnd, () -> {
-            buffer2.end();
-            buffer2.blit(WShaders.grayscale);
+        Draw.draw(WLayer.grayLayers[2], () -> {
+            buffer1.end();
+            buffer1.blit(WShaders.goldScale);
+
+            buffer1.begin(Color.clear);
         });
 
-        Draw.draw(WLayer.grayEnd + 0.1f, () -> {
-            buffer2.resize(graphics.getWidth(), graphics.getHeight());
-            buffer2.begin(Color.clear);
+        Draw.draw(WLayer.grayLayers[3], () -> {
+            buffer1.end();
+            buffer1.blit(WShaders.grayscale);
+
+            buffer1.begin(Color.clear);
+        });
+
+        Draw.draw(WLayer.grayLayers[4], () -> {
+            buffer1.end();
+            buffer1.blit(WShaders.goldScale);
+
+            buffer1.begin(Color.clear);
+        });
+
+        Draw.draw(WLayer.grayLayers[5], () -> {
+            buffer1.end();
+            buffer1.blit(WShaders.grayscale);
+
+            buffer1.begin(Color.clear);
         });
 
         Draw.draw(WLayer.goldEnd, () -> {
-            buffer2.end();
-            buffer2.blit(WShaders.goldScale);
+            buffer1.end();
+            buffer1.blit(WShaders.goldScale);
         });
     }
 
