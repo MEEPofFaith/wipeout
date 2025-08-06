@@ -54,7 +54,7 @@ public class WipeoutRenderer{
     }
 
     public void lossStart(){
-        pain = Mathf.randomBoolean(0.01f); //1% chance
+        pain = Mathf.randomBoolean(0.05f); // 5% chance
 
         if(pain) WSounds.pain.play();
         Sounds.largeCannon.play();
