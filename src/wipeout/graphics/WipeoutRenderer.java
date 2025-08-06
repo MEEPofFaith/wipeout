@@ -45,14 +45,15 @@ public class WipeoutRenderer{
         });
     }
 
-    private void winStart(){
+    public void winStart(){
         Sounds.corexplode.play();
         play = true;
         animTimer = 5 * 60;
+        loss = false;
         WShaders.contrast.seed = Time.time;
     }
 
-    private void lossStart(){
+    public void lossStart(){
         pain = Mathf.randomBoolean(0.01f); //1% chance
 
         if(pain) WSounds.pain.play();
