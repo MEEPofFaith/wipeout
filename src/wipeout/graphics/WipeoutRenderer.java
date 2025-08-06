@@ -35,24 +35,32 @@ public class WipeoutRenderer{
         Events.run(Trigger.draw, this::draw);
 
         Events.on(WorldLoadEvent.class, e -> reset());
-        Events.on(SectorCaptureEvent.class, e -> { //Win
-            Sounds.corexplode.play();
-            play = true;
-            animTimer = 5 * 60;
-            WShaders.contrast.seed = Time.time;
+        Events.on(SectorCaptureEvent.class, e -> winStart());
+        Events.on(GameOverEvent.class, e -> {
+            if(Vars.player.team() == e.winner){
+                winStart();
+            }else{
+                lossStart();
+            }
         });
-        Events.on(GameOverEvent.class, e -> { //Loss. No, not that kind.
-            if(Vars.player.team() == e.winner) return;
+    }
 
-            pain = Mathf.randomBoolean(0.01f); //1% chance
+    private void winStart(){
+        Sounds.corexplode.play();
+        play = true;
+        animTimer = 5 * 60;
+        WShaders.contrast.seed = Time.time;
+    }
 
-            if(pain) WSounds.pain.play();
-            Sounds.largeCannon.play();
-            play = true;
-            animTimer = 2 * 60;
-            loss = true;
-            WShaders.contrast.seed = Time.time;
-        });
+    private void lossStart(){
+        pain = Mathf.randomBoolean(0.01f); //1% chance
+
+        if(pain) WSounds.pain.play();
+        Sounds.largeCannon.play();
+        play = true;
+        animTimer = 2 * 60;
+        loss = true;
+        WShaders.contrast.seed = Time.time;
     }
 
     private void reset(){

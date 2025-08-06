@@ -10,6 +10,7 @@ uniform float u_intensity;
 
 varying vec2 v_texCoords;
 
+//Interp.exp
 float e(float a){
     float min = pow(EXP_VAL, -EXP_POW);
     float scale = 1.0 / (1.0 - min);
