@@ -64,7 +64,7 @@ public class WipeoutRenderer{
         WShaders.contrast.seed = Time.time;
     }
 
-    private void reset(){
+    public void reset(){
         play = false;
         animTimer = -1f;
         loss = false;

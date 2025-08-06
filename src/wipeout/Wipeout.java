@@ -21,15 +21,19 @@ public class Wipeout extends Mod{
         renderer = new WipeoutRenderer();
 
         if(debug){
-            Table test = new Table(t -> {
-                t.button("Win", () -> renderer.winStart());
+            Vars.ui.hudGroup.find("overlaymarker");
+
+            Vars.ui.hudGroup.fill(t -> {
+                t.name = "WipeoutTest";
+                t.center().left().visible(() -> Vars.ui.hudfrag.shown);
+                t.defaults().left().fillX();
+
+                t.button("Win", () -> renderer.winStart()).wrapLabel(false);
                 t.row();
-                t.button("Loss", () -> renderer.lossStart());
+                t.button("Loss", () -> renderer.lossStart()).wrapLabel(false);
+                t.row();
+                t.button("Reset", () -> renderer.reset()).wrapLabel(false);
             });
-            test.left();
-            test.name = "WipeoutTest";
-            test.setOrigin(Align.left);
-            Vars.ui.hudGroup.addChild(test);
         }
     }
 }
