@@ -10,23 +10,23 @@ uniform float u_intensity;
 
 varying vec2 v_texCoords;
 
-float exp(float a){
+float e(float a){
     float min = pow(EXP_VAL, -EXP_POW);
     float scale = 1.0 / (1.0 - min);
 
-    if(a <= 0.5f) return (pow(EXP_VAL, EXP_POW * (a * 2.0 - 1.0)) - min) * scale / 2.0;
-    return (2 - (pow(EXP_VAL, -EXP_POW * (a * 2.0 - 1.0)) - min) * scale) / 2.0;
+    if(a <= 0.5) return (pow(EXP_VAL, EXP_POW * (a * 2.0 - 1.0)) - min) * scale / 2.0;
+    return (2.0 - (pow(EXP_VAL, -EXP_POW * (a * 2.0 - 1.0)) - min) * scale) / 2.0;
 }
 
 vec3 contrast(vec3 col){
-    col.r = exp(col.r);
-    col.g = exp(col.g);
-    col.b = exp(col.b);
+    col.r = e(col.r);
+    col.g = e(col.g);
+    col.b = e(col.b);
     return col;
 }
 
 float rand(float sec){
-    return sin(u_seed + sec) * 0.2f;
+    return sin(u_seed + sec) * 0.2;
 }
 
 void main() {

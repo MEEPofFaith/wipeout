@@ -120,6 +120,8 @@ public class WipeoutRenderer{
             });
 
             Draw.draw(WLayer.grayLayers[i + 1], () -> {
+                Draw.reset();
+
                 buffer1.end();
                 buffer1.blit(WShaders.grayscale);
 
@@ -136,7 +138,7 @@ public class WipeoutRenderer{
     private void drawLoss(){
         Draw.draw(WLayer.goldBegin, () -> {
             buffer1.resize(graphics.getWidth(), graphics.getHeight());
-            buffer1.begin(Color.black);
+            buffer1.begin(Color.clear);
         });
 
         Draw.draw(WLayer.goldEnd, () -> {

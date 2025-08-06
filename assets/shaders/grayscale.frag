@@ -6,7 +6,7 @@ uniform float u_wipe;
 varying vec2 v_texCoords;
 
 bool inBounds(vec2 v){
-    return v.x > 0 && v.y > 0 && v.x < 1 && v.y < 1;
+    return v.x > 0.0 && v.y > 0.0 && v.x < 1.0 && v.y < 1.0;
 }
 
 void main() {
