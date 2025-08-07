@@ -12,12 +12,14 @@ public class WShaders{
     public static ShutdownShader shutdown;
     public static GrayscaleShader grayscale;
     public static GoldscaleShader goldScale;
+    public static PassThroughShader passThrough;
 
     public static void init(){
         contrast = new StaticShader();
         shutdown = new ShutdownShader();
         grayscale = new GrayscaleShader();
         goldScale = new GoldscaleShader();
+        passThrough = new PassThroughShader();
     }
 
     public static class StaticShader extends WLoadShader{
@@ -59,6 +61,12 @@ public class WShaders{
     public static class GoldscaleShader extends WLoadShader{
         public GoldscaleShader(){
             super("screenspace", "goldscale");
+        }
+    }
+
+    public static class PassThroughShader extends WLoadShader{
+        public PassThroughShader(){
+            super("screenspace", "passThrough");
         }
     }
 

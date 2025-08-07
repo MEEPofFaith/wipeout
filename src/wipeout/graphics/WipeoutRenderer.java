@@ -2,21 +2,25 @@ package wipeout.graphics;
 
 import arc.*;
 import arc.graphics.*;
+import arc.graphics.Texture.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
+import arc.util.pooling.*;
 import mindustry.*;
 import mindustry.audio.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.ui.*;
 import wipeout.content.*;
 
 import static arc.Core.*;
 
 public class WipeoutRenderer{
+    public static final float textBorder = 32f;
     private final FrameBuffer buffer1;
     private final FrameBuffer buffer2;
     private final SoundLoop staticLoop;
@@ -104,10 +108,19 @@ public class WipeoutRenderer{
     }
 
     private void drawWin(){
-        float z = Draw.z();
-        Draw.z(Layer.darkness + 0.1f);
-        WDrawf.displayText(displayText);
-        Draw.z(z);
+        Draw.draw(Layer.darkness + 0.1f, () -> {
+            buffer2.resize(graphics.getWidth(), graphics.getHeight());
+            buffer2.begin(Color.clear);
+
+            displayText();
+
+            buffer2.end();
+
+            TextureFilter filter = buffer2.getTexture().getMinFilter();
+            buffer2.getTexture().setFilter(TextureFilter.nearest);
+            buffer2.blit(WShaders.passThrough);
+            buffer2.getTexture().setFilter(filter);
+        });
 
         if(winStatic()){
             Draw.draw(WLayer.goldBegin, () -> {
@@ -184,5 +197,31 @@ public class WipeoutRenderer{
 
     private boolean winStatic(){
         return animTimer > 4.7 * 60 || animTimer < 0.3 * 60;
+    }
+
+    private void displayText(){
+        Font font = Fonts.tech;
+        GlyphLayout layout = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
+        boolean ints = font.usesIntegerPositions();
+        font.setUseIntegerPositions(false);
+
+        font.getData().setScale(1f);
+        layout.setText(font, displayText);
+        float sWidth = graphics.getWidth() - 2 * textBorder,
+            sHeight = graphics.getHeight() - 2 * textBorder;
+        float targetRatio = sHeight / sWidth;
+        float sourceRatio = layout.height / layout.width;
+        float scale = targetRatio > sourceRatio ? sWidth / layout.width : sHeight / layout.height;
+        font.getData().setScale(scale / Vars.renderer.getDisplayScale());
+        layout.setText(font, displayText);
+
+        font.setColor(Pal.accent);
+        font.draw(displayText, camera.position.x, camera.position.y, Align.center);
+
+        font.setUseIntegerPositions(ints);
+        font.setColor(Color.white);
+        font.getData().setScale(1f);
+        Draw.reset();
+        Pools.free(layout);
     }
 }
