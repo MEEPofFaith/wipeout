@@ -11,6 +11,7 @@ import mindustry.*;
 import mindustry.audio.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import wipeout.content.*;
 
 import static arc.Core.*;
@@ -24,6 +25,7 @@ public class WipeoutRenderer{
     private boolean play = false;
     private boolean loss = false;
     private boolean pain = false;
+    private String displayText = "CAPTURED";
 
     public WipeoutRenderer(){
         buffer1 = new FrameBuffer();
@@ -35,9 +37,13 @@ public class WipeoutRenderer{
         Events.run(Trigger.draw, this::draw);
 
         Events.on(WorldLoadEvent.class, e -> reset());
-        Events.on(SectorCaptureEvent.class, e -> winStart());
+        Events.on(SectorCaptureEvent.class, e -> {
+            displayText = Vars.state.rules.attackMode ? "CAPTURED" : "DEFENDED";
+            winStart();
+        });
         Events.on(GameOverEvent.class, e -> {
             if(Vars.player.team() == e.winner){
+                displayText = "WIPEOUT";
                 winStart();
             }else{
                 lossStart();
@@ -98,6 +104,11 @@ public class WipeoutRenderer{
     }
 
     private void drawWin(){
+        float z = Draw.z();
+        Draw.z(Layer.darkness + 0.1f);
+        WDrawf.displayText(displayText);
+        Draw.z(z);
+
         if(winStatic()){
             Draw.draw(WLayer.goldBegin, () -> {
                 buffer1.resize(graphics.getWidth(), graphics.getHeight());
